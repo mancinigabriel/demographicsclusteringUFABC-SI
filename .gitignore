@@ -102,3 +102,6 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# Ignore .ipynb in favor of .rmd version
+*.ipynb
