@@ -42,6 +42,8 @@ tam_familia_num = pd.DataFrame({'Quantidade de pessoas, incluindo você, que viv
 
 # %%
 renda_individual_num = pd.DataFrame({'Qual é, em média, a quantidade de dinheiro que você recebe mensalmente-': df_num['Qual é, em média, a quantidade de dinheiro que você recebe mensalmente-'].unique(), 'renda_individual': [250,750,0,2500,1500,0.1,3500,4500,6000]})
+# %%
+tempos_trajetos_num = pd.DataFrame({'Qual é o tempo médio necessário, em minutos, para você comparecer à UFABC-': df_num['Qual é o tempo médio necessário, em minutos, para você comparecer à UFABC-'].unique(), 'tempos_trajeto': [120,22.5,52.5,90,7.5,37.5,0]})
 
 # %%
 df_num = df_num.merge(tempos_trajetos_num, on='Qual é o tempo médio necessário, em minutos, para você comparecer à UFABC-')
@@ -75,10 +77,7 @@ df_num = df_num.drop('Qual é, em média, a quantidade de dinheiro que você rec
 df_num.columns = ['ano_ingresso','idade','CR','CA','tempo_trajeto','reprovacoes','trancamentos','tempo_UFABC','renda_familia','tam_familia','renda_individual']
 
 # %%
-tempos_trajetos_num = pd.DataFrame({'Qual é o tempo médio necessário, em minutos, para você comparecer à UFABC-': df_num['Qual é o tempo médio necessário, em minutos, para você comparecer à UFABC-'].unique(), 'tempos_trajeto': [120,22.5,52.5,90,7.5,37.5,0]})
-
-# %%
-df_teste = df_teste.dropna(axis=0, how = 'any') 
+df_teste = df_num.dropna(axis=0, how = 'any') 
 
 # %%
 df_teste = df_teste.loc[df_teste['tempo_trajeto'] != 0]
