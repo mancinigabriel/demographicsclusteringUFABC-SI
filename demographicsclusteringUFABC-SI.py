@@ -18,6 +18,7 @@
 import pandas as pd
 import numpy as np
 import seaborn as sns
+from sklearn.decomposition import PCA
 
 # %%
 df = pd.read_csv(r'microdados_perfil_discente_2018.csv',encoding="latin1", sep = ';')
@@ -78,24 +79,46 @@ df_num.columns = ['ano_ingresso','idade','CR','CA','tempo_trajeto','reprovacoes'
 
 # %%
 df_teste = df_num.dropna(axis=0, how = 'any') 
+print(df_teste.shape)
 
 # %%
 df_teste = df_teste.loc[df_teste['tempo_trajeto'] != 0]
+print(df_teste.shape)
 
 # %%
 df_teste = df_teste.loc[df_teste['renda_familia'] != 0]
+print(df_teste.shape)
 
 # %%
 df_teste = df_teste.loc[df_teste['tam_familia'] != 0]
+print(df_teste.shape)
 
 # %%
 df_teste = df_teste.loc[df_teste['renda_individual'] != 0]
+print(df_teste.shape)
 
 # %%
 df_teste = df_teste.loc[df_teste['tempo_UFABC'] != 0]
+print(df_teste.shape)
 
 # %%
-df_teste = df_num.loc[(df_num['ano_ingresso'] != "Prefiro não responder") & (df_num['idade'].empty == False)]
+df_teste = df_teste.loc[(df_teste['ano_ingresso'] != "Prefiro não responder") & (df_teste['idade'].empty == False)]
+print(df_teste.shape)
+
+# %%
+df_teste['ano_ingresso'] = pd.to_numeric(df_teste['ano_ingresso'])
+
+# %%
+CR_lista = df_teste['CR'].values.tolist()
+CA_lista = df_teste['CA'].values.tolist()
+
+# %%
+CR_lista = list(map(lambda x: x.replace(',','.'),CR_lista))
+CA_lista = list(map(lambda x: x.replace(',','.'),CA_lista))
+
+# %%
+df_teste['CR'] = np.asarray(CR_lista)
+df_teste['CA'] = np.asarray(CA_lista)
 
 # %%
 #Correlação
@@ -113,3 +136,18 @@ ax.set_xticklabels(
     rotation=45,
     horizontalalignment='right'
 );
+
+# %%
+### Transformando dataframe em array ###
+# %%
+x = df_teste.to_numpy()
+# %%
+x.shape
+
+# %%
+pca = PCA(n_components = 2)
+x_pca = pca.fit_transform(x)
+print(x_pca.shape)
+
+# %%
+x
