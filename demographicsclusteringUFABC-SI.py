@@ -147,10 +147,14 @@ ax.set_xticklabels(
 
 # %%
 ### Transformando dataframe em array ###
-df_b = df_teste.drop(['CA','tempo_trajeto'],1)
+x = df_teste[['reprovacoes','renda_per_capita','idade','ano_ingresso']]
+y = df_teste['CR']
 
 # %%
-x = df_b.to_numpy()
+y.shape
+# %%
+x = x.to_numpy()
+y = y.to_numpy()
 
 # %%
 x.shape
