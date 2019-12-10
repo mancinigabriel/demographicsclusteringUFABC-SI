@@ -129,9 +129,6 @@ df_teste['CA'] = (np.asarray(CA_lista)).astype(float)
 
 # %%
 #Correlação
-df_teste.dtypes
-
-# %%
 corr = df_teste.corr()
 ax = sns.heatmap(
     corr, 
@@ -144,6 +141,20 @@ ax.set_xticklabels(
     rotation=45,
     horizontalalignment='right'
 )
+
+# %%
+# Ranking correlações
+
+sol = (corr.where(np.triu(np.ones(corr.shape), k=1).astype(np.bool))
+                 .stack()
+                 .sort_values(ascending=False))
+
+from IPython.display import display
+# Descomentar para exibir a lista toda
+#pd.set_option('display.max_rows',500)
+#pd.set_option('display.max_columns',500)
+
+display(sol)
 
 # %%
 ### Transformando dataframe em array ###
@@ -193,6 +204,8 @@ plt.ylabel('IDADE')
 plt.title('Amostras')
 plt.grid(True)
 
+# %%
+
 x_df = df_teste[['ano_ingresso']]
 y_df = df_teste[['idade']]
 
@@ -203,6 +216,7 @@ plt.ylabel('Idade')
 plt.title('Amostras')
 plt.grid(True)
 
+# %%
 from sklearn.cluster import KMeans
 
 x = df_teste[['reprovacoes']]
@@ -237,4 +251,3 @@ centroids = kmeans.cluster_centers_
 print(centroids)
 plt.figure()
 plt.scatter(y[:,0], x[:,1], c= kmeans.labels_.astype(float), s=50, alpha=0.5)
-
