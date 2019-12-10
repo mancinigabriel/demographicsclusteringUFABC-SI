@@ -105,3 +105,6 @@ venv.bak/
 
 # Ignore .ipynb in favor of .rmd version
 *.ipynb
+
+# Ignore vscode settings
+.vscode/*

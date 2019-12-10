@@ -143,7 +143,7 @@ ax.set_xticklabels(
     ax.get_xticklabels(),
     rotation=45,
     horizontalalignment='right'
-);
+)
 
 # %%
 ### Transformando dataframe em array ###
@@ -176,10 +176,65 @@ plt.xlabel('PCA Axis 1')
 plt.ylabel('PCA Axis 2')
 plt.title('Amostras')
 plt.grid(True)
-plt.legend()
 
 # %%
 x_pca[:,0]
 
 df_teste
+
+# %%
+x_df = df_teste[['CR']]
+y_df = df_teste[['idade']]
+
+plt.figure()
+plt.scatter(x=x_df, y=y_df, cmap='viridis')
+plt.xlabel('CR')
+plt.ylabel('IDADE')
+plt.title('Amostras')
+plt.grid(True)
+
+x_df = df_teste[['ano_ingresso']]
+y_df = df_teste[['idade']]
+
+plt.figure()
+plt.scatter(x=x_df, y=y_df, cmap='viridis')
+plt.xlabel('Ano de Ingresso')
+plt.ylabel('Idade')
+plt.title('Amostras')
+plt.grid(True)
+
+from sklearn.cluster import KMeans
+
+x = df_teste[['reprovacoes']]
+y = df_teste[['idade']]
+
+x = x.to_numpy()
+y = y.to_numpy()
+
+pca = PCA(n_components = 1)
+x_pca = pca.fit_transform(x)
+
+
+KMeans(n_clusters=4).fit(x, y)
+kmeans = KMeans(n_clusters=4).fit(x, y)
+centroids = kmeans.cluster_centers_
+print(centroids)
+plt.figure()
+plt.scatter(y[:,0], x[:,0], c= kmeans.labels_.astype(float), s=50, alpha=0.5)
+
+x = df_teste[['reprovacoes', 'CR']]
+y = df_teste[['idade']]
+
+x = x.to_numpy()
+y = y.to_numpy()
+
+pca = PCA(n_components = 1)
+x_pca = pca.fit_transform(x)
+
+KMeans(n_clusters=4).fit(x, y)
+kmeans = KMeans(n_clusters=4).fit(x, y)
+centroids = kmeans.cluster_centers_
+print(centroids)
+plt.figure()
+plt.scatter(y[:,0], x[:,1], c= kmeans.labels_.astype(float), s=50, alpha=0.5)
 
