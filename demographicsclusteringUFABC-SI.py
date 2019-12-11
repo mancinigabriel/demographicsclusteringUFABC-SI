@@ -18,7 +18,10 @@
 import pandas as pd
 import numpy as np
 import seaborn as sns
+from IPython.display import display
 from sklearn.decomposition import PCA
+from sklearn.preprocessing import Normalizer
+from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 import math
 
@@ -91,6 +94,11 @@ df_teste['CR_inteiro'] = df_teste['CR'].apply(lambda x: math.floor(x))
 df_teste['renda_per_capita'] = df_teste['renda_familia']/df_teste['tam_familia']
 df_teste = df_teste.drop((['renda_familia','tam_familia']),1)
 
+df_teste['anos_ufabc'] = 2018 - df_teste['ano_ingresso']
+df_teste['renda_per_capita_norml'] = df_teste['renda_per_capita'] / 1000 
+#%%
+df_teste
+
 # %%
 #Correlação
 corr = df_teste.corr()
@@ -113,7 +121,6 @@ sol = (corr.where(np.triu(np.ones(corr.shape), k=1).astype(np.bool))
                  .stack()
                  .sort_values(ascending=False))
 
-from IPython.display import display
 # Descomentar para exibir a lista toda
 #pd.set_option('display.max_rows',500)
 #pd.set_option('display.max_columns',500)
@@ -122,8 +129,11 @@ display(sol)
 
 # %%
 ### Transformando dataframe em array ###
-x = df_teste[['reprovacoes','renda_per_capita','idade','ano_ingresso']]
+x = df_teste[['reprovacoes','renda_per_capita_norml','idade','anos_ufabc']]
 y = df_teste['CR']
+
+#%%
+x
 
 # %%
 y.shape
@@ -143,6 +153,7 @@ print(x_pca.shape)
 x_pca
 
 # %%
+
 plt.figure()
 plt.scatter(x=x_pca[:, 0], y=x_pca[:, 1], cmap='viridis')
 plt.xlim(min(x_pca[:,0]), max(x_pca[:,0]))
@@ -151,6 +162,19 @@ plt.xlabel('PCA Axis 1')
 plt.ylabel('PCA Axis 2')
 plt.title('Amostras')
 plt.grid(True)
+
+# %%
+KMeans(n_clusters=4).fit(x_pca, y)
+kmeans = KMeans(n_clusters=4).fit(x_pca, y)
+centroids = kmeans.cluster_centers_
+print(centroids)
+plt.figure()
+plt.scatter(x = x_pca[:,0], y = x_pca[:,1], c= kmeans.labels_.astype(float), s=50, alpha=0.5)
+
+#%%
+min(x_pca[:,0]), max(x_pca[:,0])
+
+
 
 # %%
 x_pca[:,0]
@@ -181,8 +205,6 @@ plt.title('Amostras')
 plt.grid(True)
 
 # %%
-from sklearn.cluster import KMeans
-
 x = df_teste[['reprovacoes']]
 y = df_teste[['idade']]
 
