@@ -149,13 +149,28 @@ plt.ylabel('PCA Axis 2')
 plt.title('Amostras')
 plt.grid(True)
 
+# %% [markdown]
+# # Definindo a quantidade ideal de clusters
+#%%
+Ks = []
+inercia = []
+for i in range(1,50):
+    kmeans = KMeans(n_clusters=i).fit(x_pca)
+    cm = kmeans.cluster_centers_
+    Ks.append(i)
+    inercia.append(kmeans.inertia_)
+
 # %%
-kmeans = KMeans(n_clusters=6).fit(x_pca, y)
+plt.plot(Ks, inercia, 'bx-')
+plt.xlabel('k')
+plt.ylabel('Sum_of_squared_distances')
+plt.title('Elbow Method For Optimal k')
+plt.show()
+
+# %%
+kmeans = KMeans(n_clusters=8).fit(x_pca)
 cm = kmeans.cluster_centers_
 grupos = kmeans.predict(x_pca)
-
-#%%
-kmeans.inertia_
 
 # %%
 plt.figure()
@@ -164,8 +179,21 @@ plt.grid(True)
 plt.scatter(x=cm[:,0], y=cm[:,1], c='r', s=150, marker='X', label='Centroid')
 plt.legend()
 
-
-
 # %%
 df_teste['clusters'] = grupos
 df_teste.head()
+
+#%%
+df_teste.columns
+
+# %%
+
+df_final = df_teste[['CR','reprovacoes','renda_per_capita','anos_ufabc','clusters']]
+
+#%%
+grupo1 = df_final.groupby(['clusters']).mean()
+grupo1
+
+# %%
+teste = df_final['CR','clusters'].groupby(['clusters']).std()
+teste
