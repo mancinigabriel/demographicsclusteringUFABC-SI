@@ -101,7 +101,6 @@ df_teste['CR_inteiro'] = df_teste['CR'].apply(lambda x: math.floor(x))
 # Calcula a renda percapta = renda familia / tamanho da família
 df_teste['renda_per_capita'] = df_teste['renda_familia']/df_teste['tam_familia']
 df_teste = df_teste.drop((['renda_familia','tam_familia']),1)
-
 df_teste['anos_ufabc'] = 2018 - df_teste['ano_ingresso']
 df_teste['renda_per_capita_norml'] = df_teste['renda_per_capita'] / 1000 
 
@@ -142,7 +141,7 @@ x_pca = pca.fit_transform(x)
 
 # %%
 plt.figure()
-plt.scatter(x=x_pca[:, 0], y=x_pca[:, 1], cmap='viridis', c=y)
+plt.scatter(x=x_pca[:, 0], y=x_pca[:, 1], cmap='viridis')
 plt.xlim(min(x_pca[:,0]), max(x_pca[:,0]))
 plt.ylim(min(x_pca[:,1]), max(x_pca[:,1]))
 plt.xlabel('PCA Axis 1')
@@ -151,81 +150,22 @@ plt.title('Amostras')
 plt.grid(True)
 
 # %%
-KMeans(n_clusters=4).fit(x_pca, y)
-kmeans = KMeans(n_clusters=4).fit(x_pca, y)
+kmeans = KMeans(n_clusters=6).fit(x_pca, y)
 cm = kmeans.cluster_centers_
+grupos = kmeans.predict(x_pca)
+
+#%%
+kmeans.inertia_
+
+# %%
 plt.figure()
 plt.scatter(x = x_pca[:,0], y = x_pca[:,1], c= kmeans.labels_.astype(float), s=50, alpha=0.5)
 plt.grid(True)
-
 plt.scatter(x=cm[:,0], y=cm[:,1], c='r', s=150, marker='X', label='Centroid')
 plt.legend()
 
-# %%
-x_df = df_teste[['CR']]
-y_df = df_teste[['idade']]
 
-plt.figure()
-plt.scatter(x=x_df, y=y_df, cmap='viridis')
-plt.xlabel('CR')
-plt.ylabel('IDADE')
-plt.title('Amostras')
-plt.grid(True)
 
 # %%
-x_df = df_teste[['ano_ingresso']]
-y_df = df_teste[['idade']]
-
-plt.figure()
-plt.scatter(x=x_df, y=y_df, cmap='viridis')
-plt.xlabel('Ano de Ingresso')
-plt.ylabel('Idade')
-plt.title('Amostras')
-plt.grid(True)
-
-# %%
-x_df = df_teste['ano_ingresso']
-y_df = df_teste['reprovacoes']
-colors = df_teste['CR'].to_numpy()
-
-plt.figure()
-plt.scatter(x=x_df, y=y_df, c=colors, cmap='viridis')
-plt.xlabel('ano')
-plt.ylabel('reprova')
-plt.title('Amostras')
-plt.grid(True)
-
-# %%
-
-x = df_teste[['reprovacoes']]
-y = df_teste[['idade']]
-
-x = x.to_numpy()
-y = y.to_numpy()
-
-pca = PCA(n_components = 1)
-x_pca = pca.fit_transform(x)
-
-
-KMeans(n_clusters=4).fit(x, y)
-kmeans = KMeans(n_clusters=4).fit(x, y)
-centroids = kmeans.cluster_centers_
-print(centroids)
-plt.figure()
-plt.scatter(y[:,0], x[:,0], c= kmeans.labels_.astype(float), s=50, alpha=0.5)
-
-x = df_teste[['reprovacoes', 'CR']]
-y = df_teste[['idade']]
-
-x = x.to_numpy()
-y = y.to_numpy()
-
-pca = PCA(n_components = 1)
-x_pca = pca.fit_transform(x)
-
-KMeans(n_clusters=4).fit(x, y)
-kmeans = KMeans(n_clusters=4).fit(x, y)
-centroids = kmeans.cluster_centers_
-print(centroids)
-plt.figure()
-plt.scatter(y[:,0], x[:,1], c= kmeans.labels_.astype(float), s=50, alpha=0.5)
+df_teste['clusters'] = grupos
+df_teste.head()
