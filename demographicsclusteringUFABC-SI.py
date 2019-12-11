@@ -35,7 +35,8 @@ from sklearn.preprocessing import normalize
 
 # %%
 # Carrega o dataset
-df = pd.read_csv(r'microdados_perfil_discente_2018.csv',encoding="latin1", sep = ';')
+df = pd.read_csv(r'C:\Users\manci\Documents\UFABC\Sistemas Inteligentes\Projeto\demographicsclusteringUFABC-SI\microdados_perfil_discente_2018.csv',encoding="latin1", sep = ';')
+
 #%%
 # Seleciona colunas
 df_num = df[['Qual é o seu ano de ingresso na UFABC-','Qual é a sua idade-','Qual é o tempo médio necessário, em minutos, para você comparecer à UFABC-','Você já foi reprovado em alguma disciplina- ','Você já efetuou trancamento total de matrícula-','Qual é o seu CR-','Qual é o seu CA-','Quantas horas, em média, você permanece na UFABC por semana-','Qual é a renda média bruta mensal de sua família-','Quantidade de pessoas, incluindo você, que vivem da renda média bruta mensal familiar- ','Qual é, em média, a quantidade de dinheiro que você recebe mensalmente-']]
@@ -107,6 +108,25 @@ df_teste['renda_per_capita_norml'] = df_teste['renda_per_capita'] / 1000
 
 # %% [markdown]
 # # Analise de correlações
+df_teste.columns
+
+
+#%%
+variaveis = df_teste[['idade','CR','tempo_trajeto','reprovacoes','trancamentos','tempo_UFABC','renda_per_capita','anos_ufabc']]
+variaveis.columns = ['Idade','CR','Tempo de trajeto até a UFABC','Qtd reprovações','Qtd trancamentos','Tempo dedicado à UFABC sem','Renda Per Capita','Anos na UFABC']
+# %%
+corr = variaveis.corr()
+ax = sns.heatmap(
+    corr, 
+    vmin=-1, vmax=1, center=0,
+    cmap=sns.diverging_palette(20, 220, n=200),
+    square=True
+)
+ax.set_xticklabels(
+    ax.get_xticklabels(),
+    rotation=45,
+    horizontalalignment='right'
+);
 
 # %%
 corr = df_teste.corr()
