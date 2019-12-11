@@ -14,6 +14,9 @@
 #     name: python3
 # ---
 
+# %% [markdown]
+# # Import de bibliotecas necessárias
+
 # %%
 import pandas as pd
 import numpy as np
@@ -24,6 +27,11 @@ from sklearn.preprocessing import Normalizer
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 import math
+from IPython.display import display
+from sklearn.preprocessing import normalize
+
+# %% [markdown]
+# # Carregar dataset e tratar dos dados
 
 # %%
 # Carrega o dataset
@@ -96,11 +104,11 @@ df_teste = df_teste.drop((['renda_familia','tam_familia']),1)
 
 df_teste['anos_ufabc'] = 2018 - df_teste['ano_ingresso']
 df_teste['renda_per_capita_norml'] = df_teste['renda_per_capita'] / 1000 
-#%%
-df_teste
+
+# %% [markdown]
+# # Analise de correlações
 
 # %%
-#Correlação
 corr = df_teste.corr()
 ax = sns.heatmap(
     corr, 
@@ -112,7 +120,7 @@ ax.set_xticklabels(
     ax.get_xticklabels(),
     rotation=45,
     horizontalalignment='right'
-)
+);
 
 # %%
 # Ranking correlações
@@ -121,41 +129,20 @@ sol = (corr.where(np.triu(np.ones(corr.shape), k=1).astype(np.bool))
                  .stack()
                  .sort_values(ascending=False))
 
-# Descomentar para exibir a lista toda
-#pd.set_option('display.max_rows',500)
-#pd.set_option('display.max_columns',500)
-
 display(sol)
 
-# %%
-### Transformando dataframe em array ###
-x = df_teste[['reprovacoes','renda_per_capita_norml','idade','anos_ufabc']]
-y = df_teste['CR']
-
-#%%
-x
+# %% [markdown]
+# # Ajuste PCA
 
 # %%
-y.shape
-# %%
-x = x.to_numpy()
-y = y.to_numpy()
-
-# %%
-x.shape
-
-# %%
+x = normalize(df_teste[['reprovacoes','renda_per_capita_norml','idade','anos_ufabc']].to_numpy())
+y = df_teste['CR'].to_numpy()
 pca = PCA(n_components = 2)
 x_pca = pca.fit_transform(x)
-print(x_pca.shape)
 
 # %%
-x_pca
-
-# %%
-
 plt.figure()
-plt.scatter(x=x_pca[:, 0], y=x_pca[:, 1], cmap='viridis')
+plt.scatter(x=x_pca[:, 0], y=x_pca[:, 1], cmap='viridis', c=y)
 plt.xlim(min(x_pca[:,0]), max(x_pca[:,0]))
 plt.ylim(min(x_pca[:,1]), max(x_pca[:,1]))
 plt.xlabel('PCA Axis 1')
@@ -166,20 +153,13 @@ plt.grid(True)
 # %%
 KMeans(n_clusters=4).fit(x_pca, y)
 kmeans = KMeans(n_clusters=4).fit(x_pca, y)
-centroids = kmeans.cluster_centers_
-print(centroids)
+cm = kmeans.cluster_centers_
 plt.figure()
 plt.scatter(x = x_pca[:,0], y = x_pca[:,1], c= kmeans.labels_.astype(float), s=50, alpha=0.5)
+plt.grid(True)
 
-#%%
-min(x_pca[:,0]), max(x_pca[:,0])
-
-
-
-# %%
-x_pca[:,0]
-
-df_teste
+plt.scatter(x=cm[:,0], y=cm[:,1], c='r', s=150, marker='X', label='Centroid')
+plt.legend()
 
 # %%
 x_df = df_teste[['CR']]
@@ -193,7 +173,6 @@ plt.title('Amostras')
 plt.grid(True)
 
 # %%
-
 x_df = df_teste[['ano_ingresso']]
 y_df = df_teste[['idade']]
 
@@ -205,6 +184,19 @@ plt.title('Amostras')
 plt.grid(True)
 
 # %%
+x_df = df_teste['ano_ingresso']
+y_df = df_teste['reprovacoes']
+colors = df_teste['CR'].to_numpy()
+
+plt.figure()
+plt.scatter(x=x_df, y=y_df, c=colors, cmap='viridis')
+plt.xlabel('ano')
+plt.ylabel('reprova')
+plt.title('Amostras')
+plt.grid(True)
+
+# %%
+
 x = df_teste[['reprovacoes']]
 y = df_teste[['idade']]
 
