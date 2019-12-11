@@ -78,6 +78,14 @@ df_num.columns = ['ano_ingresso','idade','CR','CA','tempo_trajeto','reprovacoes'
 df_teste = df_num.dropna(axis=0, how = 'any') 
 print(df_teste.shape)
 
+# Converte ano de ingresso, CR e CA para numérico
+CR_lista = df_teste['CR'].values.tolist()
+CA_lista = df_teste['CA'].values.tolist()
+CR_lista = list(map(lambda x: x.replace(',','.'),CR_lista))
+CA_lista = list(map(lambda x: x.replace(',','.'),CA_lista))
+df_teste['CR'] = (np.asarray(CR_lista)).astype(float)
+df_teste['CA'] = (np.asarray(CA_lista)).astype(float)
+
 # Remove respostas iguais a 0 e prefiro não responder
 df_teste = df_teste.loc[df_teste['tempo_trajeto'] != 0]
 df_teste = df_teste.loc[df_teste['renda_familia'] != 0]
@@ -85,15 +93,8 @@ df_teste = df_teste.loc[df_teste['tam_familia'] != 0]
 df_teste = df_teste.loc[df_teste['renda_individual'] != 0]
 df_teste = df_teste.loc[df_teste['tempo_UFABC'] != 0]
 df_teste = df_teste.loc[(df_teste['ano_ingresso'] != "Prefiro não responder") & (df_teste['idade'].empty == False)]
-
-# Converte ano de ingresso, CR e CA para numérico
+df_teste = df_teste.loc[df_teste['CR'] != 0]
 df_teste['ano_ingresso'] = pd.to_numeric(df_teste['ano_ingresso'])
-CR_lista = df_teste['CR'].values.tolist()
-CA_lista = df_teste['CA'].values.tolist()
-CR_lista = list(map(lambda x: x.replace(',','.'),CR_lista))
-CA_lista = list(map(lambda x: x.replace(',','.'),CA_lista))
-df_teste['CR'] = (np.asarray(CR_lista)).astype(float)
-df_teste['CA'] = (np.asarray(CA_lista)).astype(float)
 
 #Adiciona coluna com CR arredondado
 df_teste['CR_inteiro'] = df_teste['CR'].apply(lambda x: math.floor(x))
@@ -183,17 +184,25 @@ plt.legend()
 df_teste['clusters'] = grupos
 df_teste.head()
 
-#%%
-df_teste.columns
-
 # %%
-
 df_final = df_teste[['CR','reprovacoes','renda_per_capita','anos_ufabc','clusters']]
 
 #%%
-grupo1 = df_final.groupby(['clusters']).mean()
-grupo1
+medias = df_final.groupby(['clusters']).mean()
+medias
 
 # %%
-teste = df_final['CR','clusters'].groupby(['clusters']).std()
-teste
+desvpads = df_final.groupby(['clusters']).std()
+desvpads
+
+# %%
+tam_clusters = df_final.groupby(['clusters']).count()
+tam_clusters
+
+# %%
+minimos = df_final.groupby(['clusters']).min()
+minimos
+
+# %%
+maximos = df_final.groupby(['clusters']).max()
+maximos
