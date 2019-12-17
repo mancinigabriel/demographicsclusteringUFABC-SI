@@ -15,6 +15,14 @@
 # ---
 
 # %% [markdown]
+Grupo:
+Gabriel Pitali de Carvalho - 11026214
+Gabriel Silvestre Mancini - 11038214
+Rafael Zayat Hernandez - 11085016
+Renato Morassi da Silva - 11091012
+
+
+# %% [markdown]
 # # Import de bibliotecas necessárias
 
 # %%
@@ -151,7 +159,7 @@ plt.title('Amostras')
 plt.grid(True)
 
 # %% [markdown]
-# # Definindo a quantidade ideal de clusters
+# # Definindo a quantidade ideal de clusters com o método Elbow
 #%%
 Ks = []
 inercia = []
@@ -168,6 +176,9 @@ plt.ylabel('Sum_of_squared_distances')
 plt.title('Elbow Method For Optimal k')
 plt.show()
 
+# %% [markdown]
+# # Ajuste e plot KMeans com os cluster definidos
+
 # %%
 kmeans = KMeans(n_clusters=8).fit(x_pca)
 cm = kmeans.cluster_centers_
@@ -179,6 +190,9 @@ plt.scatter(x = x_pca[:,0], y = x_pca[:,1], c= kmeans.labels_.astype(float), s=5
 plt.grid(True)
 plt.scatter(x=cm[:,0], y=cm[:,1], c='r', s=150, marker='X', label='Centroid')
 plt.legend()
+
+# %% [markdown]
+# # Análise dos clusters encontrados
 
 # %%
 df_teste['clusters'] = grupos
