@@ -15,6 +15,14 @@
 # ---
 
 # %% [markdown]
+Grupo:
+Gabriel Pitali de Carvalho - 11026214
+Gabriel Silvestre Mancini - 11038214
+Rafael Zayat Hernandez - 11085016
+Renato Morassi da Silva - 11091012
+
+
+# %% [markdown]
 # # Import de bibliotecas necessárias
 
 # %%
@@ -36,7 +44,7 @@ from sklearn.preprocessing import normalize
 # %%
 # Carrega o dataset
 df = pd.read_csv(r'microdados_perfil_discente_2018.csv',encoding="latin1", sep = ';')
-
+#%%
 # Seleciona colunas
 df_num = df[['Qual é o seu ano de ingresso na UFABC-','Qual é a sua idade-','Qual é o tempo médio necessário, em minutos, para você comparecer à UFABC-','Você já foi reprovado em alguma disciplina- ','Você já efetuou trancamento total de matrícula-','Qual é o seu CR-','Qual é o seu CA-','Quantas horas, em média, você permanece na UFABC por semana-','Qual é a renda média bruta mensal de sua família-','Quantidade de pessoas, incluindo você, que vivem da renda média bruta mensal familiar- ','Qual é, em média, a quantidade de dinheiro que você recebe mensalmente-']]
 
@@ -151,7 +159,7 @@ plt.title('Amostras')
 plt.grid(True)
 
 # %% [markdown]
-# # Definindo a quantidade ideal de clusters
+# # Definindo a quantidade ideal de clusters com o método Elbow
 #%%
 Ks = []
 inercia = []
@@ -168,6 +176,9 @@ plt.ylabel('Sum_of_squared_distances')
 plt.title('Elbow Method For Optimal k')
 plt.show()
 
+# %% [markdown]
+# # Ajuste e plot KMeans com os cluster definidos
+
 # %%
 kmeans = KMeans(n_clusters=8).fit(x_pca)
 cm = kmeans.cluster_centers_
@@ -179,6 +190,9 @@ plt.scatter(x = x_pca[:,0], y = x_pca[:,1], c= kmeans.labels_.astype(float), s=5
 plt.grid(True)
 plt.scatter(x=cm[:,0], y=cm[:,1], c='r', s=150, marker='X', label='Centroid')
 plt.legend()
+
+# %% [markdown]
+# # Análise dos clusters encontrados
 
 # %%
 df_teste['clusters'] = grupos
